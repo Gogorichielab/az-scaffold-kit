@@ -1,0 +1,2 @@
+Checkov CLI scan results placeholder.
+Run: checkov -d terraform-azurerm-resource_group
