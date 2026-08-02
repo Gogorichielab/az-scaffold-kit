@@ -1,0 +1,56 @@
+version: 2
+
+updates:
+  # CI actions. Nothing here is visible to consumers of this module, so minor
+  # and patch bumps auto-merge — see .github/workflows/dependabot-auto-merge.yml.
+  #
+  # One directory, one group, so every action bump arrives in a single pull
+  # request rather than one per action.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    # A grouped pull request counts as one against this limit, so capping at 1
+    # keeps a second batch from opening while the first is still unmerged.
+    open-pull-requests-limit: 1
+
+  # Terraform providers, declared in the root module and in both examples.
+  #
+  # group-by collapses the directory dimension: one provider bump becomes ONE
+  # pull request touching the root module and both examples together, instead
+  # of three per-directory pull requests that could be merged out of step and
+  # leave the examples pinned to a different floor than the module.
+  #
+  # These never auto-merge. Raising a provider floor changes this module's
+  # public interface and forces a MAJOR release under the policy in AGENTS.md,
+  # which is a human decision.
+  - package-ecosystem: "terraform"
+    directories:
+      - "/"
+      - "/examples/*"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    groups:
+      terraform-providers:
+        group-by: dependency-name
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+      - "terraform"
+    open-pull-requests-limit: 3

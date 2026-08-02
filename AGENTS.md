@@ -94,6 +94,16 @@ Every release gets a `CHANGELOG.md` entry under its version heading, in [Keep a 
 
 Tags cover the whole repository, docs included, so a docs-only release still moves the tag. That is expected: `?ref=` guarantees the module's behaviour is fixed, not that every tag changed it.
 
+## Dependency updates
+
+Dependabot runs weekly, configured in [`.github/dependabot.yml`](.github/dependabot.yml).
+
+Updates are grouped so a batch arrives as one pull request rather than one per dependency. GitHub Actions bumps share a single group. Terraform providers use `group-by: dependency-name`, which collapses the directory dimension — a provider bump lands as one pull request updating the root module and both examples together, so the examples can never end up pinned to a different floor than the module.
+
+**Only GitHub Actions minor and patch bumps auto-merge.** They are CI-only and invisible to consumers.
+
+**Terraform provider bumps never auto-merge, at any level.** Raising a provider floor changes what consumers must satisfy, which is a MAJOR release under [Versioning and releases](#versioning-and-releases). Merging one is a release decision: bump the major version and say so in `CHANGELOG.md`. Do not relax this rule to reduce review load.
+
 ## Working agreements
 
 - Match the surrounding style. Comments in this repo explain *why*, not *what* — a comment restating the resource type is noise.
