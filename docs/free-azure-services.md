@@ -1,6 +1,11 @@
 # Free Azure Services
 
+> **Last verified:** 2026-08-02
+> **Source:** [Azure free services](https://azure.microsoft.com/pricing/free-services/) · [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator/)
+
 Compiled from the Azure portal's free services page. Free amounts change over time — verify against the current Azure pricing page before relying on these figures.
+
+If the **Last verified** date above is more than a quarter old, treat every number here as unconfirmed. See [Keeping this current](#keeping-this-current) for the update process, and [Revision history](#revision-history) for what has changed since.
 
 ## AI & Machine Learning
 - **Text to Speech** — 0.5 million characters/month (Standard Neural Voices)
@@ -88,3 +93,25 @@ Compiled from the Azure portal's free services page. Free amounts change over ti
 
 ## Data & Analytics
 - **Data Catalog** — Unlimited users
+
+---
+
+## Keeping this current
+
+Azure revises free-tier allowances without notice, and services occasionally leave the free tier entirely. To re-verify:
+
+1. Open the [Azure free services page](https://azure.microsoft.com/pricing/free-services/) and compare it section by section against this document.
+2. For each difference, update the entry here and add a line to [Revision history](#revision-history) naming the service, the old value, and the new one.
+3. Note services that were **added** to or **removed** from the free tier — a removal is the change most likely to break someone's assumptions, so call it out explicitly rather than deleting the line silently.
+4. Bump **Last verified** at the top of this file to the date you checked, even when nothing changed. A confirmed-unchanged date is useful information.
+5. Record the change in the repo [CHANGELOG.md](../CHANGELOG.md) under `Unreleased`.
+
+Free amounts also vary by region, subscription type, and whether an account is inside its first 12 months. The figures here describe the always-free tier for a standard pay-as-you-go subscription; the 12-month introductory offers are deliberately out of scope.
+
+## Revision history
+
+Changes to the figures in this document, newest first. A verification that found no changes is recorded as a **Last verified** bump at the top of the file rather than an entry here.
+
+| Date | Service | Change |
+| --- | --- | --- |
+| 2026-08-02 | — | Initial compilation from the Azure portal's free services page. |

@@ -4,3 +4,6 @@ Live-code Azure apps fast. Terraform modules, an Agents dot M D guide for AI ass
 ## Docs
 
 - [Free Azure Services](docs/free-azure-services.md) — free-tier cheat sheet of what each Azure service gives you at no cost.
+- [Changelog](CHANGELOG.md) — notable changes to this project.
+
+Azure changes its free-tier allowances without notice, so the cheat sheet carries a **Last verified** date and a revision history. Check that date before trusting a figure, and follow [Keeping this current](docs/free-azure-services.md#keeping-this-current) when re-verifying.
