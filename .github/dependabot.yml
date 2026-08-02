@@ -16,8 +16,11 @@ updates:
       github-actions:
         patterns:
           - "*"
+    # Yields "ci(deps): ...", a Conventional Commits type plus scope. These
+    # only touch CI, so ci is the accurate type. See AGENTS.md > Commits.
     commit-message:
       prefix: "ci"
+      include: "scope"
     labels:
       - "dependencies"
       - "github-actions"
@@ -48,8 +51,15 @@ updates:
         group-by: dependency-name
         patterns:
           - "*"
+    # Yields "build(deps): ...". build is the Conventional Commits type for
+    # external dependencies, and a provider constraint is exactly that.
+    #
+    # Note that build(deps) reads as PATCH, but raising a provider floor is
+    # MAJOR under AGENTS.md. Whoever merges one adds the "!" and the
+    # BREAKING CHANGE footer; Dependabot cannot know to do that itself.
     commit-message:
-      prefix: "deps"
+      prefix: "build"
+      include: "scope"
     labels:
       - "dependencies"
       - "terraform"

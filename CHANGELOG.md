@@ -19,6 +19,14 @@ Change types used below: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
   auto-merge for GitHub Actions minor and patch bumps only. Terraform provider
   bumps are deliberately excluded, because raising a provider floor is a MAJOR
   change to this module's public interface.
+- `AGENTS.md` — a *Commits* section adopting Conventional Commits 1.0.0, with
+  the repo's type vocabulary and how each type maps onto the semver bump.
+
+### Changed
+
+- Dependabot commit prefixes now produce Conventional Commits: `ci(deps)` for
+  GitHub Actions and `build(deps)` for Terraform providers, replacing the
+  non-conventional `deps` prefix.
 
 ## [0.1.0] - 2026-08-02
 
