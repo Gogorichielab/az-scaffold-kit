@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars and adjust. *.tfvars is gitignored.
+
+workload    = "scaffold"
+environment = "dev"
+
+# Must support both the Static Web App Free tier and the Flex Consumption plan.
+location = "eastus2"
+
+function_app_runtime_name    = "node"
+function_app_runtime_version = "20"

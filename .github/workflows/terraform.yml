@@ -1,0 +1,72 @@
+name: terraform
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  TERRAFORM_VERSION: "1.13.3"
+
+jobs:
+  fmt:
+    name: fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - run: terraform fmt -check -recursive -diff
+
+  validate-module:
+    name: validate module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - name: terraform init
+        working-directory: modules/azure-scaffold
+        run: terraform init -backend=false -input=false
+      - name: terraform validate
+        working-directory: modules/azure-scaffold
+        run: terraform validate
+
+  validate-examples:
+    name: validate example
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example: [minimum, function-app]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      # Examples point at the module's public git address so they double as
+      # copy-pasteable docs. Validating that address would test whatever tag is
+      # published rather than this commit, so it is rewritten to the checkout.
+      - name: Point example at the checked-out module
+        run: |
+          sed -i \
+            "s#\"git::https://github.com/Gogorichielab/az-scaffold-kit.git//modules/azure-scaffold?ref=[^\"]*\"#\"${GITHUB_WORKSPACE}/modules/azure-scaffold\"#" \
+            "examples/${{ matrix.example }}/main.tf"
+          grep -q "${GITHUB_WORKSPACE}/modules/azure-scaffold" "examples/${{ matrix.example }}/main.tf"
+
+      - name: terraform init
+        working-directory: examples/${{ matrix.example }}
+        run: terraform init -backend=false -input=false
+
+      - name: terraform validate
+        working-directory: examples/${{ matrix.example }}
+        run: terraform validate
