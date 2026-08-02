@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars and adjust. *.tfvars is gitignored.
+
+workload    = "scaffold"
+environment = "dev"
+
+# Static Web App Free tier regions include westus2, centralus, eastus2,
+# westeurope, and eastasia.
+location = "eastus2"
