@@ -9,6 +9,25 @@ Change types used below: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [Unreleased]
 
+### Added
+
+- `.github/dependabot.yml` — weekly grouped dependency updates. GitHub Actions
+  bumps arrive as a single pull request; Terraform provider bumps use
+  `group-by: dependency-name` so one provider lands as one pull request
+  updating the root module and both examples together.
+- `.github/workflows/dependabot-auto-merge.yml` — auto-approves and enables
+  auto-merge for GitHub Actions minor and patch bumps only. Terraform provider
+  bumps are deliberately excluded, because raising a provider floor is a MAJOR
+  change to this module's public interface.
+- `AGENTS.md` — a *Commits* section adopting Conventional Commits 1.0.0, with
+  the repo's type vocabulary and how each type maps onto the semver bump.
+
+### Changed
+
+- Dependabot commit prefixes now produce Conventional Commits: `ci(deps)` for
+  GitHub Actions and `build(deps)` for Terraform providers, replacing the
+  non-conventional `deps` prefix.
+
 ## [0.1.0] - 2026-08-02
 
 First release. The repository was renamed from `az-scaffold-kit` to

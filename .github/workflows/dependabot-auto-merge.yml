@@ -1,0 +1,56 @@
+name: dependabot auto-merge
+
+# pull_request_target, not pull_request: Dependabot pull requests run with a
+# read-only token on pull_request, which cannot approve or merge. This workflow
+# never checks out the pull request's code, so running in the base repository's
+# context does not expose anything to it.
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: auto-merge
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v3
+
+      # Only CI action bumps land without a human, and only minor and patch.
+      #
+      # Deliberately excluded:
+      #   - Terraform provider bumps, at any level. Raising a provider floor
+      #     changes what consumers of this module must satisfy, which is a
+      #     MAJOR release under AGENTS.md.
+      #   - Major action bumps, which can change workflow semantics.
+      #
+      # --auto queues the merge behind the required status checks rather than
+      # merging immediately, so a red CI run still blocks it.
+      - name: Approve and enable auto-merge
+        if: >-
+          steps.meta.outputs.package-ecosystem == 'github-actions' &&
+          (steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+           steps.meta.outputs.update-type == 'version-update:semver-patch')
+        run: |
+          gh pr review --approve "$PR_URL"
+          gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Explain why auto-merge was skipped
+        if: >-
+          steps.meta.outputs.package-ecosystem != 'github-actions' ||
+          steps.meta.outputs.update-type == 'version-update:semver-major'
+        run: |
+          echo "Left for manual review."
+          echo "  ecosystem:   ${{ steps.meta.outputs.package-ecosystem }}"
+          echo "  update type: ${{ steps.meta.outputs.update-type }}"
+          echo "Terraform provider bumps raise this module's floor (a MAJOR"
+          echo "release under AGENTS.md); major action bumps can change"
+          echo "workflow semantics. Both need a human."
