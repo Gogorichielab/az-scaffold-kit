@@ -11,6 +11,10 @@ Change types used below: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Added
 
+- `AGENTS.md` — guide for AI assistants working in this repo, covering Terraform
+  conventions, the semantic versioning policy for the module's public interface,
+  verification steps, and known Azure constraints. Directs SKU and tier choices
+  to `docs/free-azure-services.md` so defaults stay on free tiers.
 - `modules/azure-scaffold` — Terraform module deploying an Azure Static Web App
   by default, with an optional Flex Consumption Function App stack
   (`enable_function_app`) and an optional user-assigned managed identity

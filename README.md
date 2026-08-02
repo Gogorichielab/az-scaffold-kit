@@ -22,6 +22,7 @@ Pin `?ref=` to a release tag. Full inputs, outputs, and constraints are in the [
 
 ## Docs
 
+- [AGENTS.md](AGENTS.md) — conventions for AI assistants working in this repo: Terraform practices, semantic versioning rules, verification steps, and known constraints.
 - [Free Azure Services](docs/free-azure-services.md) — free-tier cheat sheet of what each Azure service gives you at no cost.
 - [Changelog](CHANGELOG.md) — notable changes to this project.
 
