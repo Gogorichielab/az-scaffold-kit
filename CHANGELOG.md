@@ -9,13 +9,25 @@ Change types used below: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-08-02
+
+First release. The repository was renamed from `az-scaffold-kit` to
+`terraform-azurerm-scaffold` and the module moved from `modules/azure-scaffold`
+to the repository root, so the root is now the module consumers get.
+
+Consume it with:
+
+```hcl
+source = "git::https://github.com/Gogorichielab/terraform-azurerm-scaffold.git?ref=v0.1.0"
+```
+
 ### Added
 
 - `AGENTS.md` — guide for AI assistants working in this repo, covering Terraform
   conventions, the semantic versioning policy for the module's public interface,
   verification steps, and known Azure constraints. Directs SKU and tier choices
   to `docs/free-azure-services.md` so defaults stay on free tiers.
-- `modules/azure-scaffold` — Terraform module deploying an Azure Static Web App
+- The module itself, at the repository root — deploys an Azure Static Web App
   by default, with an optional Flex Consumption Function App stack
   (`enable_function_app`) and an optional user-assigned managed identity
   (`enable_managed_identity`). Defaults to `Free`/`Free` Static Web App,
@@ -33,7 +45,7 @@ Change types used below: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
   *Keeping this current* re-verification process, and a *Revision history*
   table recording changes to individual free-tier figures.
 - This changelog.
-- README sections covering the Terraform module and the docs.
+- README documenting usage, inputs, outputs, and constraints.
 
 ### Notes
 
@@ -51,4 +63,9 @@ in four places, each because the spec as written cannot deploy:
 - Adds an action group, since the `smartDetectorAlertRules` API rejects an
   empty `actionGroups.groupIds`.
 
-[Unreleased]: https://github.com/Gogorichielab/az-scaffold-kit/commits/main
+`terraform plan`/`apply` against a live Azure subscription had not been run at
+the time of this release. `terraform fmt`, `terraform validate`, and negative
+tests of every input validation had.
+
+[Unreleased]: https://github.com/Gogorichielab/terraform-azurerm-scaffold/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Gogorichielab/terraform-azurerm-scaffold/releases/tag/v0.1.0

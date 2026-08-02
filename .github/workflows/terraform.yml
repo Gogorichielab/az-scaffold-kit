@@ -33,10 +33,8 @@ jobs:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
           terraform_wrapper: false
       - name: terraform init
-        working-directory: modules/azure-scaffold
         run: terraform init -backend=false -input=false
       - name: terraform validate
-        working-directory: modules/azure-scaffold
         run: terraform validate
 
   validate-examples:
@@ -59,9 +57,9 @@ jobs:
       - name: Point example at the checked-out module
         run: |
           sed -i \
-            "s#\"git::https://github.com/Gogorichielab/az-scaffold-kit.git//modules/azure-scaffold?ref=[^\"]*\"#\"${GITHUB_WORKSPACE}/modules/azure-scaffold\"#" \
+            "s#\"git::https://github.com/Gogorichielab/terraform-azurerm-scaffold.git?ref=[^\"]*\"#\"${GITHUB_WORKSPACE}\"#" \
             "examples/${{ matrix.example }}/main.tf"
-          grep -q "${GITHUB_WORKSPACE}/modules/azure-scaffold" "examples/${{ matrix.example }}/main.tf"
+          grep -q "source = \"${GITHUB_WORKSPACE}\"" "examples/${{ matrix.example }}/main.tf"
 
       - name: terraform init
         working-directory: examples/${{ matrix.example }}
