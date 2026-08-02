@@ -7,7 +7,7 @@ terraform {
     azurerm = {
       source = "hashicorp/azurerm"
       # azurerm_function_app_flex_consumption was introduced in v4.21.0.
-      version = "~> 4.21"
+      version = "~> 5.0"
     }
     azapi = {
       source  = "Azure/azapi"
