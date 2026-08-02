@@ -4,13 +4,15 @@ Instructions for AI coding agents working in this repository. Humans may find it
 
 ## What this repo is
 
-`az-scaffold-kit` stands up the Azure side of a live-coding project fast and cheap. It holds a reusable Terraform module, runnable examples, and reference docs. It is optimised for *starting* projects, so **defaults must stay on free or consumption tiers** — an idle scaffold should cost nothing.
+`terraform-azurerm-scaffold` stands up the Azure side of a live-coding project fast and cheap. It is optimised for *starting* projects, so **defaults must stay on free or consumption tiers** — an idle scaffold should cost nothing.
+
+**The repository root is the module.** The `.tf` files at the root are what consumers get, which is what the `terraform-<PROVIDER>-<NAME>` repo name promises and what the Terraform Registry requires. Do not move them into a subdirectory.
 
 ```
-modules/azure-scaffold/   the module (reusable, consumed by other repos)
-examples/                 runnable root modules, one per deployment combination
-docs/                     reference documentation
-.github/workflows/        CI
+*.tf                 the module itself, consumed by other repos
+examples/            runnable root modules, one per deployment combination
+docs/                reference documentation
+.github/workflows/   CI
 ```
 
 ## Cost and SKU decisions
@@ -19,7 +21,7 @@ docs/                     reference documentation
 
 Rules:
 
-- New resources default to their free tier when one exists. If none exists, default to the cheapest consumption option and say so in the module README's cost notes.
+- New resources default to their free tier when one exists. If none exists, default to the cheapest consumption option and say so in the README's cost notes.
 - Never raise a default SKU for performance without being asked. Add an input instead and leave the default alone.
 - Check the **Last verified** date at the top of that document. If it is more than a quarter old, treat its figures as unconfirmed and verify against the [Azure free services page](https://azure.microsoft.com/pricing/free-services/) before relying on them.
 - When you learn a free-tier allowance has changed, update that document *and* its Revision history table, per its own [Keeping this current](docs/free-azure-services.md#keeping-this-current) section.
@@ -51,7 +53,7 @@ Follow the [Standard Module Structure](https://developer.hashicorp.com/terraform
 
 **Lock files**
 
-Provider lock files belong to root modules. `modules/**/.terraform.lock.hcl` is gitignored, because pinning providers inside a consumed module misleads — the consuming root module's lock file is the one that applies.
+Provider lock files belong to root modules. The root `.terraform.lock.hcl` is gitignored, because this repository *is* a consumed module and pinning providers here misleads — the consuming configuration's lock file is the one that applies.
 
 ## Verifying changes
 
@@ -59,8 +61,7 @@ Run these before committing any `.tf` change. CI runs the same checks.
 
 ```bash
 terraform fmt -check -recursive
-
-cd modules/azure-scaffold && terraform init -backend=false && terraform validate
+terraform init -backend=false && terraform validate
 ```
 
 To validate an example, rewrite its module source to the local checkout first — examples point at the public git address on purpose, so validating them as-is would test the published tag instead of your working copy. `.github/workflows/terraform.yml` shows the exact `sed`.
@@ -76,7 +77,7 @@ Test validations **negatively**. A validation nobody has seen reject anything is
 This repo follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html). Releases are git tags of the form `vMAJOR.MINOR.PATCH`, and consumers pin them:
 
 ```hcl
-source = "git::https://github.com/Gogorichielab/az-scaffold-kit.git//modules/azure-scaffold?ref=v0.1.0"
+source = "git::https://github.com/Gogorichielab/terraform-azurerm-scaffold.git?ref=v0.1.0"
 ```
 
 The module's **public interface** is its input variables, its outputs, and the infrastructure a given set of inputs produces. Version against that interface, not against the size of the diff.
@@ -104,7 +105,7 @@ Tags cover the whole repository, docs included, so a docs-only release still mov
 
 Things that have already cost time here. Check these before debugging from scratch.
 
-- **`FC1` is the only supported plan SKU** in `azure-scaffold`. It deploys `azurerm_function_app_flex_consumption`, which runs on Flex Consumption and nothing else. `azurerm_linux_function_app` cannot emit the `functionAppConfig` section an FC1 plan requires — the pairing fails at apply. Other plan types need a different function app resource.
+- **`FC1` is the only supported plan SKU.** The module deploys `azurerm_function_app_flex_consumption`, which runs on Flex Consumption and nothing else. `azurerm_linux_function_app` cannot emit the `functionAppConfig` section an FC1 plan requires — the pairing fails at apply. Other plan types need a different function app resource.
 - **Flex Consumption is Linux only.**
 - **Application Insights must be workspace-based.** Classic was retired 29 February 2024. Omitting `workspace_id` lets Azure provision a workspace out of band, which then shows up as a permanent plan diff.
 - **The Failure Anomalies rule requires an action group.** `smartDetectorAlertRules` rejects an empty `actionGroups.groupIds`.

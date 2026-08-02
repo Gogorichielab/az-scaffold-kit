@@ -22,7 +22,7 @@ provider "azapi" {}
 # The source address is the one an external caller would use. Pin ?ref= to a
 # release tag so the module cannot change under you between applies.
 module "scaffold" {
-  source = "git::https://github.com/Gogorichielab/az-scaffold-kit.git//modules/azure-scaffold?ref=v0.1.0"
+  source = "git::https://github.com/Gogorichielab/terraform-azurerm-scaffold.git?ref=v0.1.0"
 
   workload    = var.workload
   environment = var.environment
