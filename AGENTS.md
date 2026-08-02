@@ -72,6 +72,53 @@ Test validations **negatively**. A validation nobody has seen reject anything is
 
 `terraform plan`/`apply` against a real subscription needs credentials that CI does not have. Never claim a module is deploy-verified on the strength of `validate` alone — say plainly what was and was not run.
 
+## Commits
+
+Commit messages follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```
+<type>[optional scope][!]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types used in this repo:
+
+| Type | Use for |
+| --- | --- |
+| `feat` | A new input, output, or resource the module creates |
+| `fix` | A defect corrected — behaviour moving toward what was already documented |
+| `docs` | README, AGENTS.md, CHANGELOG, the cheat sheet, code comments |
+| `refactor` | Restructuring that leaves behaviour and the public interface unchanged |
+| `test` | Validation tests and test scaffolding |
+| `build` | Provider and Terraform version constraints — anything a consumer must satisfy |
+| `ci` | Workflows, Dependabot config, and anything else that only runs in CI |
+| `chore` | Repository housekeeping with no effect on the module |
+
+Rules:
+
+- Description in the imperative mood, lower case, no trailing period. `add failure anomalies toggle`, not `Added failure anomalies toggle.`
+- Scope is optional and names the area touched: `feat(monitoring):`, `ci(deps):`.
+- A breaking change takes a `!` before the colon **and** a `BREAKING CHANGE:` footer saying what consumers must do about it.
+- Use the body to explain *why*. The diff already shows what changed.
+- When a change cannot work as specified, say so in the body rather than quietly building something else — same rule as [Working agreements](#working-agreements).
+
+### How commit types map to the version bump
+
+| Commit | Release |
+| --- | --- |
+| any `!` or `BREAKING CHANGE:` footer | MAJOR |
+| `feat` | MINOR |
+| `fix`, `docs`, `refactor`, `test`, `build`, `ci`, `chore` | PATCH |
+
+This is the same interface rule as [Versioning and releases](#versioning-and-releases), applied per commit. Where the two seem to disagree, the interface rule wins — the type is a label, the interface is the contract.
+
+**The trap to watch for:** a provider floor bump arrives from Dependabot as `build(deps): bump ...`, which reads as PATCH from the table above. It is not. Raising a floor changes what consumers must satisfy and is MAJOR. Add the `!` and a `BREAKING CHANGE:` footer when you merge one, and treat it as the release decision it is.
+
+Commits made before this convention was adopted do not follow it. Do not rewrite them.
+
 ## Versioning and releases
 
 This repo follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html). Releases are git tags of the form `vMAJOR.MINOR.PATCH`, and consumers pin them:
@@ -107,6 +154,7 @@ Updates are grouped so a batch arrives as one pull request rather than one per d
 ## Working agreements
 
 - Match the surrounding style. Comments in this repo explain *why*, not *what* — a comment restating the resource type is noise.
+- Write commit messages per [Commits](#commits).
 - Update `CHANGELOG.md` in the same commit as the change it describes.
 - When a spec you were handed cannot work, say so and explain why before building an alternative. Record the deviation in `CHANGELOG.md` and the PR body. Do not silently "fix" a spec.
 - Report honestly what you verified. If a check was skipped or failed, say which and why.
